@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Sales - Garage Management System{% endblock %}
+{% block page_title %}Sales Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-cash-coin"></i> All Sales
+    </div>
+    <div class="card-body">
+        {% if sales %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Sale ID</th>
+                        <th>Service ID</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td><strong>#{{ sale.id }}</strong></td>
+                        <td>
+                            <a href="{{ url_for('view_service', id=sale.service.id) }}">#{{ sale.service.id }}</a>
+                        </td>
+                        <td>{{ sale.service.vehicle.owner.name }}</td>
+                        <td>{{ sale.service.vehicle.license_plate }}</td>
+                        <td class="text-success"><strong>${{ "%.2f"|format(sale.total_amount) }}</strong></td>
+                        <td>
+                            <span class="badge bg-secondary">{{ sale.payment_method.upper() if sale.payment_method else 'N/A' }}</span>
+                        </td>
+                        <td>
+                            {% if sale.payment_status == 'paid' %}
+                            <span class="badge bg-success">Paid</span>
+                            {% elif sale.payment_status == 'partial' %}
+                            <span class="badge bg-warning">Partial</span>
+                            {% else %}
+                            <span class="badge bg-danger">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sale.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <a href="{{ url_for('view_sale', id=sale.id) }}" class="btn btn-sm btn-info" title="View Receipt">
+                                <i class="bi bi-receipt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="table-active">
+                        <td colspan="4" class="text-end"><strong>Total Revenue:</strong></td>
+                        <td colspan="5" class="text-success">
+                            <strong>${{ "%.2f"|format(sales|sum(attribute='total_amount')) }}</strong>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-cash-coin text-muted" style="font-size: 4rem;"></i>
+            <p class="text-muted mt-3">No sales records found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if sales %}
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon text-success">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="value">${{ "%.2f"|format(sales|sum(attribute='total_amount')) }}</div>
+            <div class="label">Total Revenue</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon text-primary">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div class="value">{{ sales|length }}</div>
+            <div class="label">Total Sales</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="icon text-info">
+                <i class="bi bi-calculator"></i>
+            </div>
+            <div class="value">${{ "%.2f"|format(sales|sum(attribute='total_amount') / sales|length if sales|length > 0 else 0) }}</div>
+            <div class="label">Average Sale</div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

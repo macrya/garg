@@ -1,0 +1,94 @@
+╔══════════════════════════════════════════════════════════════╗
+║         GARAGE MANAGEMENT SYSTEM - QUICK START               ║
+╚══════════════════════════════════════════════════════════════╝
+
+📦 INSTALLATION (Choose ONE method):
+
+Method 1 - AUTOMATED (Recommended):
+  Windows: Double-click setup.bat
+  Mac/Linux: chmod +x setup.sh && ./setup.sh
+
+Method 2 - MANUAL:
+  1. python -m venv venv
+  2. Windows: venv\Scripts\activate
+     Mac/Linux: source venv/bin/activate
+  3. pip install -r requirements.txt
+  4. python init_db.py
+
+🚀 RUNNING THE APP:
+  1. Activate venv (see above)
+  2. python app.py
+  3. Open browser: http://localhost:5000
+
+🔐 LOGIN CREDENTIALS:
+  Admin: admin / admin123
+  Staff: staff / staff123
+
+📁 PROJECT STRUCTURE:
+  app.py              → Main application
+  init_db.py          → Database setup
+  requirements.txt    → Dependencies
+  templates/          → HTML templates (19 files)
+  README.md           → Full documentation
+  SETUP_GUIDE.md      → Detailed setup guide
+
+✨ KEY FEATURES:
+  ✓ User Authentication (Login/Logout/Register)
+  ✓ Customer Management (Add/Edit/Delete/View)
+  ✓ Vehicle Management (CRUD with associations)
+  ✓ Service Booking (Status tracking, parts usage)
+  ✓ Inventory Management (Low-stock alerts)
+  ✓ Sales Tracking (Receipt generation)
+  ✓ Dashboard (Real-time metrics)
+  ✓ Responsive UI (Bootstrap 5)
+
+🗄️ SAMPLE DATA:
+  - 2 Users (admin, staff)
+  - 10 Customers
+  - 15 Vehicles
+  - 30 Services
+  - 15 Inventory Parts
+  - Multiple Sales Records
+
+🛠️ TROUBLESHOOTING:
+  Database issues:    rm garage.db && python init_db.py
+  Port in use:        Change port in app.py (line: app.run)
+  Module not found:   pip install -r requirements.txt
+  Login fails:        Use correct credentials or reset DB
+
+📚 DOCUMENTATION:
+  Quick Start:        This file
+  Full Docs:          README.md
+  Detailed Setup:     SETUP_GUIDE.md
+  Code Reference:     Comments in app.py
+
+🔒 SECURITY (For Production):
+  1. Change SECRET_KEY in app.py
+  2. Set debug=False
+  3. Use PostgreSQL/MySQL instead of SQLite
+  4. Deploy with Gunicorn/uWSGI
+  5. Enable HTTPS
+  6. Set environment variables
+
+💡 TIPS:
+  - Start with sample data to understand the system
+  - Test all features before customization
+  - Back up garage.db regularly
+  - Read SETUP_GUIDE.md for detailed usage
+  - Check app.py comments for code explanations
+
+🌐 TECH STACK:
+  Backend:   Flask 3.0, SQLAlchemy, Flask-Login
+  Database:  SQLite (dev), PostgreSQL/MySQL (prod)
+  Frontend:  Bootstrap 5, jQuery, Jinja2
+  Language:  Python 3.8+
+
+📞 SUPPORT:
+  - Check troubleshooting section
+  - Review code comments
+  - Read SETUP_GUIDE.md
+  - Test with sample data first
+
+═══════════════════════════════════════════════════════════════
+Ready for tomorrow! All files included. Good luck! 🚗💨
+═══════════════════════════════════════════════════════════════

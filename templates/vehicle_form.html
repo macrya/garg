@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}{% if vehicle %}Edit{% else %}Add{% endif %} Vehicle - Garage Management System{% endblock %}
+{% block page_title %}{% if vehicle %}Edit{% else %}Add New{% endif %} Vehicle{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-car-front-fill"></i> 
+                {% if vehicle %}Edit Vehicle{% else %}Add New Vehicle{% endif %}
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="customer_id" class="form-label">Owner <span class="text-danger">*</span></label>
+                        <select class="form-select" id="customer_id" name="customer_id" required>
+                            <option value="">Select Customer</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}" 
+                                {% if vehicle and vehicle.customer_id == customer.id %}selected{% endif %}
+                                {% if request.args.get('customer_id') and request.args.get('customer_id')|int == customer.id %}selected{% endif %}>
+                                {{ customer.name }} - {{ customer.phone }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="make" class="form-label">Make <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="make" name="make" 
+                                   value="{{ vehicle.make if vehicle else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="model" class="form-label">Model <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="model" name="model" 
+                                   value="{{ vehicle.model if vehicle else '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="year" class="form-label">Year <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="year" name="year" 
+                                   value="{{ vehicle.year if vehicle else '' }}" min="1900" max="2025" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="license_plate" class="form-label">License Plate <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="license_plate" name="license_plate" 
+                                   value="{{ vehicle.license_plate if vehicle else '' }}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="color" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="color" name="color" 
+                                   value="{{ vehicle.color if vehicle else '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="vin" class="form-label">VIN (Vehicle Identification Number)</label>
+                        <input type="text" class="form-control" id="vin" name="vin" 
+                               value="{{ vehicle.vin if vehicle else '' }}" maxlength="50">
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('vehicles') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {% if vehicle %}Update{% else %}Add{% endif %} Vehicle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

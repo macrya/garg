@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Sale Receipt #{{ sale.id }} - Garage Management System{% endblock %}
+{% block page_title %}Sale Receipt{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="bi bi-receipt"></i> SALE RECEIPT</h3>
+                <p class="mb-0">Receipt #{{ sale.id }}</p>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Customer Information</h5>
+                        <p>
+                            <strong>Name:</strong> {{ sale.service.vehicle.owner.name }}<br>
+                            <strong>Phone:</strong> {{ sale.service.vehicle.owner.phone }}<br>
+                            <strong>Email:</strong> {{ sale.service.vehicle.owner.email or 'N/A' }}
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h5>Sale Information</h5>
+                        <p>
+                            <strong>Date:</strong> {{ sale.created_at.strftime('%Y-%m-%d %H:%M') }}<br>
+                            <strong>Payment Method:</strong> {{ sale.payment_method.upper() if sale.payment_method else 'N/A' }}<br>
+                            <strong>Payment Status:</strong> 
+                            {% if sale.payment_status == 'paid' %}
+                            <span class="badge bg-success">Paid</span>
+                            {% elif sale.payment_status == 'partial' %}
+                            <span class="badge bg-warning">Partial</span>
+                            {% else %}
+                            <span class="badge bg-danger">Pending</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h5>Vehicle Information</h5>
+                <p>
+                    <strong>License Plate:</strong> {{ sale.service.vehicle.license_plate }}<br>
+                    <strong>Vehicle:</strong> {{ sale.service.vehicle.year }} {{ sale.service.vehicle.make }} {{ sale.service.vehicle.model }}<br>
+                    <strong>Color:</strong> {{ sale.service.vehicle.color }}
+                </p>
+                
+                <hr>
+                
+                <h5>Service Details</h5>
+                <p>
+                    <strong>Service ID:</strong> #{{ sale.service.id }}<br>
+                    <strong>Service Type:</strong> {{ sale.service.service_type }}<br>
+                    <strong>Service Date:</strong> {{ sale.service.scheduled_date.strftime('%Y-%m-%d') }}<br>
+                    {% if sale.service.description %}
+                    <strong>Description:</strong> {{ sale.service.description }}<br>
+                    {% endif %}
+                </p>
+                
+                {% if sale.service.parts_used %}
+                <hr>
+                <h5>Parts Used</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Part Name</th>
+                                <th>Part Number</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service_part in sale.service.parts_used %}
+                            <tr>
+                                <td>{{ service_part.part.part_name }}</td>
+                                <td>{{ service_part.part.part_number }}</td>
+                                <td>{{ service_part.quantity }}</td>
+                                <td>${{ "%.2f"|format(service_part.unit_price) }}</td>
+                                <td class="text-end">${{ "%.2f"|format(service_part.quantity * service_part.unit_price) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6 offset-md-6">
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Service Cost:</strong></td>
+                                <td class="text-end">${{ "%.2f"|format(sale.service.cost) }}</td>
+                            </tr>
+                            <tr class="table-active">
+                                <td><h5><strong>Total Amount:</strong></h5></td>
+                                <td class="text-end"><h5 class="text-success"><strong>${{ "%.2f"|format(sale.total_amount) }}</strong></h5></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="text-center text-muted">
+                    <p class="mb-0">Thank you for your business!</p>
+                    <p class="mb-0">Garage Management System</p>
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button onclick="window.print()" class="btn btn-primary">
+                        <i class="bi bi-printer"></i> Print Receipt
+                    </button>
+                    <a href="{{ url_for('view_service', id=sale.service.id) }}" class="btn btn-secondary">
+                        <i class="bi bi-eye"></i> View Service Details
+                    </a>
+                    <a href="{{ url_for('sales') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Sales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .sidebar, .navbar, .btn, .card-header h3 i {
+        display: none !important;
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #000;
+    }
+}
+</style>
+{% endblock %}

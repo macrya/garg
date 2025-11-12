@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Garage Management System{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon text-primary">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="value">{{ total_customers }}</div>
+            <div class="label">Total Customers</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon text-success">
+                <i class="bi bi-car-front-fill"></i>
+            </div>
+            <div class="value">{{ total_vehicles }}</div>
+            <div class="label">Total Vehicles</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon text-warning">
+                <i class="bi bi-clock-fill"></i>
+            </div>
+            <div class="value">{{ pending_services }}</div>
+            <div class="label">Pending Services</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon text-info">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="value">{{ completed_today }}</div>
+            <div class="label">Completed Today</div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Statistics -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="icon text-success">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="value">${{ "%.2f"|format(total_revenue) }}</div>
+            <div class="label">Total Revenue</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card">
+            <div class="icon text-primary">
+                <i class="bi bi-calendar-day"></i>
+            </div>
+            <div class="value">${{ "%.2f"|format(today_revenue) }}</div>
+            <div class="label">Today's Revenue</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Upcoming Appointments -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-calendar-check"></i> Upcoming Appointments
+            </div>
+            <div class="card-body">
+                {% if upcoming_services %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in upcoming_services %}
+                            <tr>
+                                <td>{{ service.vehicle.license_plate }}</td>
+                                <td>{{ service.service_type }}</td>
+                                <td>{{ service.scheduled_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <span class="badge badge-{{ service.status }}">
+                                        {{ service.status.replace('_', ' ').title() }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No upcoming appointments</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Services -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-list-check"></i> Recent Services
+            </div>
+            <div class="card-body">
+                {% if recent_services %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Service</th>
+                                <th>Cost</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in recent_services %}
+                            <tr>
+                                <td>{{ service.vehicle.license_plate }}</td>
+                                <td>{{ service.service_type }}</td>
+                                <td>${{ "%.2f"|format(service.cost) }}</td>
+                                <td>
+                                    <span class="badge badge-{{ service.status }}">
+                                        {{ service.status.replace('_', ' ').title() }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No recent services</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Low Stock Parts -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-exclamation-triangle"></i> Low Stock Alert
+            </div>
+            <div class="card-body">
+                {% if low_stock_parts %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Part Name</th>
+                                <th>Part Number</th>
+                                <th>Current Stock</th>
+                                <th>Reorder Level</th>
+                                <th>Supplier</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for part in low_stock_parts %}
+                            <tr>
+                                <td>{{ part.part_name }}</td>
+                                <td>{{ part.part_number }}</td>
+                                <td class="low-stock">{{ part.quantity }}</td>
+                                <td>{{ part.reorder_level }}</td>
+                                <td>{{ part.supplier }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_part', id=part.id) }}" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-plus-circle"></i> Reorder
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-success text-center py-3">
+                    <i class="bi bi-check-circle"></i> All inventory levels are good
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

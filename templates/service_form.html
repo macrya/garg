@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{% if service %}Edit{% else %}Book{% endif %} Service - Garage Management System{% endblock %}
+{% block page_title %}{% if service %}Edit{% else %}Book New{% endif %} Service{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-wrench"></i> 
+                {% if service %}Edit Service{% else %}Book New Service{% endif %}
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="vehicle_id" class="form-label">Vehicle <span class="text-danger">*</span></label>
+                        <select class="form-select" id="vehicle_id" name="vehicle_id" required>
+                            <option value="">Select Vehicle</option>
+                            {% for vehicle in vehicles %}
+                            <option value="{{ vehicle.id }}" 
+                                {% if service and service.vehicle_id == vehicle.id %}selected{% endif %}>
+                                {{ vehicle.license_plate }} - {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.owner.name }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="service_type" class="form-label">Service Type <span class="text-danger">*</span></label>
+                        <select class="form-select" id="service_type" name="service_type" required>
+                            <option value="">Select Service Type</option>
+                            <option value="Oil Change" {% if service and service.service_type == 'Oil Change' %}selected{% endif %}>Oil Change</option>
+                            <option value="Brake Service" {% if service and service.service_type == 'Brake Service' %}selected{% endif %}>Brake Service</option>
+                            <option value="Tire Rotation" {% if service and service.service_type == 'Tire Rotation' %}selected{% endif %}>Tire Rotation</option>
+                            <option value="Engine Diagnostic" {% if service and service.service_type == 'Engine Diagnostic' %}selected{% endif %}>Engine Diagnostic</option>
+                            <option value="Transmission Service" {% if service and service.service_type == 'Transmission Service' %}selected{% endif %}>Transmission Service</option>
+                            <option value="Battery Replacement" {% if service and service.service_type == 'Battery Replacement' %}selected{% endif %}>Battery Replacement</option>
+                            <option value="Air Filter Replacement" {% if service and service.service_type == 'Air Filter Replacement' %}selected{% endif %}>Air Filter Replacement</option>
+                            <option value="Coolant Flush" {% if service and service.service_type == 'Coolant Flush' %}selected{% endif %}>Coolant Flush</option>
+                            <option value="Brake Pad Replacement" {% if service and service.service_type == 'Brake Pad Replacement' %}selected{% endif %}>Brake Pad Replacement</option>
+                            <option value="Wheel Alignment" {% if service and service.service_type == 'Wheel Alignment' %}selected{% endif %}>Wheel Alignment</option>
+                            <option value="General Inspection" {% if service and service.service_type == 'General Inspection' %}selected{% endif %}>General Inspection</option>
+                            <option value="Other" {% if service and service.service_type == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ service.description if service else '' }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="scheduled_date" class="form-label">Scheduled Date & Time <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="scheduled_date" name="scheduled_date" 
+                                   value="{{ service.scheduled_date.strftime('%Y-%m-%dT%H:%M') if service else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cost" class="form-label">Estimated Cost ($)</label>
+                            <input type="number" class="form-control" id="cost" name="cost" step="0.01" min="0"
+                                   value="{{ service.cost if service else '0.00' }}">
+                        </div>
+                    </div>
+                    
+                    {% if service %}
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="pending" {% if service.status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="in_progress" {% if service.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="completed" {% if service.status == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="cancelled" {% if service.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('services') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {% if service %}Update{% else %}Book{% endif %} Service
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
