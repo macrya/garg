@@ -286,5 +286,3 @@ This project is provided as-is for educational and commercial use.
   - Production-ready error handling
 
 ---
-
-**Built with Flask by Claude** 🚗💨
